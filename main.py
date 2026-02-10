@@ -63,4 +63,46 @@ def inference(req: InferenceRequest, x_lnac_api_key: Optional[str] = Header(defa
             }
         ],
         "policy_flags": []
+# ---- DEBUG: library load sanity check (pilot only) ----
+
+import json
+from pathlib import Path
+
+DATA_DIR = Path(__file__).parent / "data"
+
+def _load_json(name: str):
+    p = DATA_DIR / name
+    return json.loads(p.read_text(encoding="utf-8"))
+
+@app.get("/debug/library")
+def debug_library():
+    index = _load_json("library-index.json")
+    derailers = _load_json("derailer-library.json")
+    micro = _load_json("micro-actions.json")
+
+    # normalize derailer library shape
+    if isinstance(derailers, dict) and "derailers" in derailers:
+        derailer_items = derailers["derailers"]
+    elif isinstance(derailers, dict):
+        derailer_items = list(derailers.values())
+    elif isinstance(derailers, list):
+        derailer_items = derailers
+    else:
+        derailer_items = []
+
+    micro_items = (
+        micro.get("micro_actions", [])
+        if isinstance(micro, dict)
+        else micro if isinstance(micro, list)
+        else []
+    )
+
+    return {
+        "library_index_version": index.get("version"),
+        "levels_present": sorted((index.get("levels") or {}).keys()),
+        "derailer_count": len(derailer_items),
+        "micro_action_count": len(micro_items),
+        "data_dir_exists": DATA_DIR.exists(),
+        "data_files": sorted(p.name for p in DATA_DIR.glob("*.json")),
+    }
     }
