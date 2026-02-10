@@ -1,7 +1,14 @@
 import os
+import json
+from pathlib import Path
+from typing import Any, Dict, Optional
+
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
-from typing import Any, Dict, Optional
+
+# -------------------------------------------------
+# App setup
+# -------------------------------------------------
 
 app = FastAPI(title="LNAC API", version="0.1.0")
 
@@ -13,6 +20,10 @@ def require_key(x_lnac_api_key: Optional[str]):
     if x_lnac_api_key != API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API key")
 
+# -------------------------------------------------
+# Models
+# -------------------------------------------------
+
 class InferenceRequest(BaseModel):
     request_id: str
     user: Dict[str, Any]
@@ -20,12 +31,15 @@ class InferenceRequest(BaseModel):
     interaction: Dict[str, Any]
     history_summary: Optional[Dict[str, Any]] = None
 
-@app.get("/health")
-def health():
-    return {"ok": True}
+# -------------------------------------------------
+# Inference endpoint (stub for now)
+# -------------------------------------------------
 
 @app.post("/v1/inference")
-def inference(req: InferenceRequest, x_lnac_api_key: Optional[str] = Header(default=None)):
+def inference(
+    req: InferenceRequest,
+    x_lnac_api_key: Optional[str] = Header(default=None)
+):
     require_key(x_lnac_api_key)
 
     assessed_level = req.user.get("assessed_level", 3)
@@ -54,19 +68,27 @@ def inference(req: InferenceRequest, x_lnac_api_key: Optional[str] = Header(defa
             {
                 "id": "MA_001",
                 "title": "Pause before acting",
-                "steps": ["Pause 5 seconds", "Ask one clarifying question before deciding"]
+                "steps": [
+                    "Pause 5 seconds",
+                    "Ask one clarifying question before responding"
+                ]
             },
             {
                 "id": "MA_002",
                 "title": "Delegate one decision",
-                "steps": ["Pick a decision", "Assign an owner", "Set a 24-hour deadline"]
+                "steps": [
+                    "Pick a decision",
+                    "Assign an owner",
+                    "Set a 24-hour deadline"
+                ]
             }
         ],
         "policy_flags": []
-# ---- DEBUG: library load sanity check (pilot only) ----
+    }
 
-import json
-from pathlib import Path
+# -------------------------------------------------
+# Debug: library load sanity check (pilot only)
+# -------------------------------------------------
 
 DATA_DIR = Path(__file__).parent / "data"
 
@@ -80,7 +102,6 @@ def debug_library():
     derailers = _load_json("derailer-library.json")
     micro = _load_json("micro-actions.json")
 
-    # normalize derailer library shape
     if isinstance(derailers, dict) and "derailers" in derailers:
         derailer_items = derailers["derailers"]
     elif isinstance(derailers, dict):
@@ -90,12 +111,12 @@ def debug_library():
     else:
         derailer_items = []
 
-    micro_items = (
-        micro.get("micro_actions", [])
-        if isinstance(micro, dict)
-        else micro if isinstance(micro, list)
-        else []
-    )
+    if isinstance(micro, dict) and "micro_actions" in micro:
+        micro_items = micro["micro_actions"]
+    elif isinstance(micro, list):
+        micro_items = micro
+    else:
+        micro_items = []
 
     return {
         "library_index_version": index.get("version"),
@@ -105,4 +126,4 @@ def debug_library():
         "data_dir_exists": DATA_DIR.exists(),
         "data_files": sorted(p.name for p in DATA_DIR.glob("*.json")),
     }
-    }
+
