@@ -96,34 +96,35 @@ def _load_json(name: str):
     p = DATA_DIR / name
     return json.loads(p.read_text(encoding="utf-8"))
 
+
 @app.get("/debug/library")
 def debug_library():
     index = _load_json("library-index.json")
     derailers = _load_json("derailer-library.json")
     micro = _load_json("micro-actions.json")
 
-    if isinstance(derailers, dict) and "derailers" in derailers:
-        derailer_items = derailers["derailers"]
-    elif isinstance(derailers, dict):
-        derailer_items = list(derailers.values())
-    elif isinstance(derailers, list):
-        derailer_items = derailers
-    else:
-        derailer_items = []
+    def count_level_items(obj):
+        levels = obj.get("levels", {}) if isinstance(obj, dict) else {}
+        total = 0
+        for _, items in levels.items():
+            if isinstance(items, list):
+                total += len(items)
+            elif isinstance(items, dict):
+                total += len(items)
+        return total, sorted(levels.keys())
 
-    if isinstance(micro, dict) and "micro_actions" in micro:
-        micro_items = micro["micro_actions"]
-    elif isinstance(micro, list):
-        micro_items = micro
-    else:
-        micro_items = []
+    derailer_total, derailer_levels = count_level_items(derailers)
+    micro_total, micro_levels = count_level_items(micro)
 
     return {
         "library_index_version": index.get("version"),
         "levels_present": sorted((index.get("levels") or {}).keys()),
-        "derailer_count": len(derailer_items),
-        "micro_action_count": len(micro_items),
+        "derailer_count": derailer_total,
+        "derailer_levels_present": derailer_levels,
+        "micro_action_count": micro_total,
+        "micro_levels_present": micro_levels,
         "data_dir_exists": DATA_DIR.exists(),
         "data_files": sorted(p.name for p in DATA_DIR.glob("*.json")),
     }
+
 
