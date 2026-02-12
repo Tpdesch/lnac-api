@@ -45,8 +45,8 @@ def inference(
     assessed_level = req.user.get("assessed_level", 3)
 
     return {
-        "engine_version": "0.1.0",
-        "library_version": req.context.get("library_version", "v0.1.0"),
+        "debug_code_version": "2026-02-12a",
+        "library_version": index.get("version"),
         "primary_classification": {
             "level": assessed_level,
             "derailer_id": "DUMMY_DERAILER",
