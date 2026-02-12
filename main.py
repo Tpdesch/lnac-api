@@ -44,12 +44,15 @@ def inference(
 
     assessed_level = req.user.get("assessed_level", 3)
 
+    index = _load_json("library-index.json")
+    candidates = (index.get("levels") or {}).get(str(assessed_level), [])
+
     return {
         "debug_code_version": "2026-02-12a",
         "library_version": index.get("version"),
         "primary_classification": {
             "level": assessed_level,
-            "derailer_id": "DUMMY_DERAILER",
+            "derailer_id": candidates[0] if candidates else "NO_DERAILER_FOUND",
             "confidence_bucket": "medium"
         },
         "rationale_bullets": [
@@ -126,5 +129,6 @@ def debug_library():
         "data_dir_exists": DATA_DIR.exists(),
         "data_files": sorted(p.name for p in DATA_DIR.glob("*.json")),
     }
+
 
 
