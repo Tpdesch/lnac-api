@@ -1,11 +1,88 @@
 {
   "version": "v0.1.0",
   "levels": {
-    "1": ["L1_OVERREACTIVITY", "L1_SHORT_TERMISM"],
-    "2": ["L2_MICROMANAGEMENT", "L2_APPROVAL_SEEKING"],
-    "3": ["L3_OVERCONTROL", "L3_ANALYSIS_PARALYSIS"],
-    "4": ["L4_STRATEGIC_DRIFT", "L4_STAKEHOLDER_BLINDSPOT"],
-    "5": ["L5_VISION_OVERREACH", "L5_DISCONNECT_FROM_EXECUTION"]
+    "1": [
+      {
+        "id": "MA_L1_OR_001",
+        "derailer_id": "L1_OVERREACTIVITY",
+        "title": "Name it, then choose",
+        "steps": [
+          "Pause 3 seconds",
+          "Label the emotion in one word",
+          "Choose the smallest next action"
+        ],
+        "tags": ["pause", "emotional-regulation"],
+        "minutes": 2
+      }
+    ],
+    "2": [
+      {
+        "id": "MA_L2_MM_001",
+        "derailer_id": "L2_MICROMANAGEMENT",
+        "title": "Delegate a bounded outcome",
+        "steps": [
+          "State the outcome and deadline",
+          "Ask for the plan",
+          "Agree on a single check-in point"
+        ],
+        "tags": ["delegation", "accountability"],
+        "minutes": 5
+      }
+    ],
+    "3": [
+      {
+        "id": "MA_L3_OC_001",
+        "derailer_id": "L3_OVERCONTROL",
+        "title": "Delegate one decision with guardrails",
+        "steps": [
+          "Pick one decision you’re holding too tightly",
+          "Define success criteria in 2 bullets",
+          "Assign an owner and a 24-hour deadline"
+        ],
+        "tags": ["delegation", "decision-rights"],
+        "minutes": 8
+      },
+      {
+        "id": "MA_L3_AP_001",
+        "derailer_id": "L3_ANALYSIS_PARALYSIS",
+        "title": "Make a reversible decision",
+        "steps": [
+          "Define what makes this decision reversible",
+          "Set a 15-minute timebox",
+          "Choose and commit to a review date"
+        ],
+        "tags": ["decision-making", "timebox"],
+        "minutes": 6
+      }
+    ],
+    "4": [
+      {
+        "id": "MA_L4_SD_001",
+        "derailer_id": "L4_STRATEGIC_DRIFT",
+        "title": "Re-anchor to the strategic aim",
+        "steps": [
+          "Write the 1-sentence strategic aim",
+          "List 3 priorities that support it",
+          "Stop or defer 1 activity that doesn’t"
+        ],
+        "tags": ["strategy", "focus"],
+        "minutes": 10
+      }
+    ],
+    "5": [
+      {
+        "id": "MA_L5_VO_001",
+        "derailer_id": "L5_VISION_OVERREACH",
+        "title": "Add an execution bridge",
+        "steps": [
+          "Define the smallest executable next milestone",
+          "Name the owner and resources required",
+          "Schedule a check-in to confirm traction"
+        ],
+        "tags": ["execution", "milestones"],
+        "minutes": 10
+      }
+    ]
   }
 }
 
