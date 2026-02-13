@@ -12,6 +12,10 @@ from pydantic import BaseModel
 
 app = FastAPI(title="LNAC API", version="0.1.0")
 
+@app.get("/debug/ping")
+def debug_ping():
+    return {"ok": True, "code": "candidate-derailer-live"}
+
 API_KEY = os.getenv("LNAC_API_KEY", "")
 
 def require_key(x_lnac_api_key: Optional[str]):
