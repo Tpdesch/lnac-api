@@ -42,7 +42,13 @@ def inference(
 ):
     require_key(x_lnac_api_key)
 
-    assessed_level = req.user.get("assessed_level", 3)
+    try:
+        assessed_level = int(req.user.get("assessed_level", 3))
+    except Exception:
+        assessed_level = 3
+
+    if assessed_level < 1 or assessed_level > 5:
+        assessed_level = 3
 
     index = _load_json("library-index.json")
     candidates = (index.get("levels") or {}).get(str(assessed_level), [])
